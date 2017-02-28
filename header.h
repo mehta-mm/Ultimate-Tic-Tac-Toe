@@ -9,7 +9,7 @@ using namespace std;
 #define LARGE_MAX  1000
 #define LARGE_MIN -1000
 
-int max_depth = 25;
+int max_depth = 4;
 int util_max = 0;
 int util_min = 0;
 bool chance = true;
