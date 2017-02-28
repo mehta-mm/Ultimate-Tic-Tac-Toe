@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 result alpha_beta (vector<vector<char> >board, int block2)                      // Initial alpha beta function.
 {
     int value = INT_MIN, temp;
@@ -103,7 +102,8 @@ int max_value (vector<vector<char> > board, int alpha, int beta, int block, int 
 
     int value = INT_MIN;
 
-    for(int j=0; j<limit; j++)
+    for(int j=0; j<limit; j++)                                              // Has to play in the block corresponding
+                                                                            // to previous cell.
     {
         if(board[block][j] == '-')
         {
@@ -135,11 +135,11 @@ int max_value (vector<vector<char> > board, int alpha, int beta, int block, int 
                     value = max(value, min_value(board, alpha, beta, j, depth+1));
                     board[i][j] = '-';
 
-                    if(value <=alpha)
+                    if(value >= beta)
                     {
                         return value;
                     }
-                    beta = min(beta, value);
+                    alpha = max(alpha, value);
                 }
                 return value;
             }
@@ -157,7 +157,8 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
 
     int value = INT_MAX;
 
-    for(int j=0; j<limit; j++)
+    for(int j=0; j<limit; j++)                                              // Has to play in the block corresponding 
+                                                                            // to previous cell.
     {
         if(board[block][j] == '-')
         {
@@ -198,4 +199,4 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
             }
         }
     }
-}
+}   
