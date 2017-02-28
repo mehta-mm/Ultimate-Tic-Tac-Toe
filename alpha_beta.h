@@ -6,7 +6,7 @@
 
 using namespace std;
 
-result alpha_beta (vector<vector<char> >board, int block2)                      // Initial alpha beta function.
+result alpha_beta (vector<vector<char> >board, int block2)        // Initial alpha beta function.
 {
     int value = INT_MIN, temp;
     int block = 0;
@@ -15,6 +15,7 @@ result alpha_beta (vector<vector<char> >board, int block2)                      
 
     if(new_game)
     {
+        cout << "It's a new game." << endl;
         for (int i=0; i<limit; i++)
         {
             for(int j=0; j<limit; j++)                                  
@@ -32,7 +33,6 @@ result alpha_beta (vector<vector<char> >board, int block2)                      
             }
         }
         new_game = false;
-        return result (block, cell);                               // Return the move that is most fruitful.
     }
 
     else
@@ -68,7 +68,7 @@ result alpha_beta (vector<vector<char> >board, int block2)                      
                     if(board[i][j] == '-')
                     {
                         board[i][j] = 'x';
-                        temp = max(value, min_value(board, INT_MIN, INT_MAX, j, 1));
+                        temp = min_value(board, INT_MIN, INT_MAX, j, 1);
                         board[i][j] = '-';
 
                         if(value <= temp)                                               // Pruning condition.
@@ -80,46 +80,37 @@ result alpha_beta (vector<vector<char> >board, int block2)                      
                     }
                 }
             }
-        }
-        return result (block, cell);   
+        }   
     }
-
-    
+    return result (block, cell);                     // Return the move that is most fruitful.    
 }
 
 int max_value (vector<vector<char> > board, int alpha, int beta, int block, int depth)
 {
+    //cout << "I am in max_value " << depth << endl;
     bool check = false;
-
     if(depth == max_depth)                                          // Estimate the utility value.
-    {   
-        cout << endl <<endl <<endl;
-        print_board(board);
-        int utility2 = utility(board);
-        cout << utility2;
-        return utility2;
+    {  
+        return utility (board);
     }
 
     int value = INT_MIN;
 
-    for(int j=0; j<limit; j++)                                              // Has to play in the block corresponding
-                                                                            // to previous cell.
+    for(int j=0; j<limit; j++)
     {
         if(board[block][j] == '-')
         {
             board[block][j] = 'x';
-            value = max(value, min_value(board, alpha, beta, j, depth+1));  // call the min function.
+            //cout << "Called the min function " << depth << endl;
+            value = max(value, min_value(board, alpha, beta, j, depth+1));  // call the min function.    
             board[block][j] = '-';
             check = true;
 
             if(value >= beta)                                               // Pruning condition.
-            {
                 return value;
-            }
                 
             alpha = max(alpha, value);
         }
-        return value;
     }
 
     if(!check)                                                      // If all the positions are filled then 
@@ -132,37 +123,38 @@ int max_value (vector<vector<char> > board, int alpha, int beta, int block, int 
                 if(board[i][j] == '-')
                 {
                     board[i][j] = 'x';
+                    //cout << "Called the min function from anywhere" << depth << endl;
                     value = max(value, min_value(board, alpha, beta, j, depth+1));
                     board[i][j] = '-';
 
+
                     if(value >= beta)
-                    {
                         return value;
-                    }
+
                     alpha = max(alpha, value);
                 }
-                return value;
+               
             }
         }
     }
+    return value;
 } 
 
 int min_value (vector<vector<char> > board, int alpha, int beta, int block, int depth)
 {
     bool check = false;
-    if(depth == max_depth)                                                  // Estimate the utility.
-    {
-        return utility(board);
-    }              
+    //cout << "I am in min_value " << depth << endl;
+    if(depth == max_depth)                                         // Estimate the utility.
+        return utility (board);          
 
     int value = INT_MAX;
 
-    for(int j=0; j<limit; j++)                                              // Has to play in the block corresponding 
-                                                                            // to previous cell.
+    for(int j=0; j<limit; j++)
     {
         if(board[block][j] == '-')
         {
             board[block][j] = 'o';
+            //cout << "Called the max function " << depth << endl;
             value = min(value, max_value(board, alpha, beta, j, depth+1));  // Call the max function
             board[block][j] = '-';
             check = true;
@@ -173,7 +165,6 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
             }
             beta = min(beta, value);
         }
-        return value;
     } 
 
     if(!check)                                                 // Can play anywhere if all positions in the 
@@ -186,6 +177,7 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
                 if(board[i][j] == '-')
                 {
                     board[i][j] = 'o';
+                    //cout << "Called the max function from anywhere" << depth << endl;
                     value = min(value, max_value(board, alpha, beta, j, depth+1));  // Call the max function.
                     board[i][j] = '-';
 
@@ -195,8 +187,9 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
                     }
                     beta = min(beta, value);
                 }
-                return value;
             }
         }
     }
-}   
+
+    return value;
+}
