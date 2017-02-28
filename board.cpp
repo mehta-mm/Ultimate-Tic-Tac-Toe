@@ -11,19 +11,28 @@ using namespace std;
 int main()
 {
     hash_wrapper();
+
     bool check = false;
     vector<vector<char> > board(9, vector<char>(9, '-'));               // Initiate the board.
     int block, cell, next = 0;
     int next_block = 0;
 
-    cout<< "You are playing with o." << endl << "Blocks are from 1 to 9" << endl;;
+    cout << endl << endl;
+    cout << "Some points:" << endl;
+    cout << "1) You are playing with o." << endl;
+    cout << "2) Blocks are from 1 to 9" << endl;
+    cout << "3) The bot will play first" << endl;
+    cout << endl << endl;
 
     while(1)
     {
         if(chance)
         {
             if(utility(board) == -1000)
+            {
+                cout << "Congratulations, You have won the game!!" << endl;
                 break;
+            }
 
             cout << "It's bot's turn." << endl;
 
@@ -38,13 +47,17 @@ int main()
 
             cout << "It took the bot " << (stop_s-start_s)/double(CLOCKS_PER_SEC)*1000;
             cout << " sec to play the move." << endl;
-            chance = !chance;
+            chance = false;
         }
 
         else
         {
+            //print_board (board);
             if(utility(board) == 1000)
+            {
+                cout << "The bot has won the game" << endl;
                 break;
+            }
 
             for (int i=0; i<limit; i++)
             {
@@ -88,13 +101,8 @@ int main()
                 }
             }
             next_block = cell;
-            chance = !chance;
+            chance = true;
             check = false;
         }
     }
-
-    if(chance)
-        cout << "The bot has won!!" << endl;
-    else
-        cout << "You won!!" <<endl;
 }
