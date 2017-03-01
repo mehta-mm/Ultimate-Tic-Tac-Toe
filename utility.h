@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include "header.h"
+#include "print_function.h"
 
 #pragma once
 
@@ -12,8 +13,19 @@ map<vector<char>, properties> small_board_hash;
 
 void print_char_vector(vector<char> s)
 {
-    for(int i=0; i<s.size(); i++)
-        cout<<s[i];
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            if(j==0)
+                cout << "\t\t\t\t\t  ";
+            else 
+                cout << " ";
+            cout << s[(i*3)+j];
+        } 
+        cout << endl;      
+    }
+        
 }
 
 
@@ -40,18 +52,18 @@ char find_winner(vector<char> small_board)
     char winner = '-';
 
     //Row-wise conditions
-    if      ((bs[0] == bs[1] == bs[2] !='-')) winner = bs[1];
-    else if ((bs[3] == bs[4] == bs[5] !='-')) winner = bs[4];
-    else if ((bs[6] == bs[7] == bs[8] !='-')) winner = bs[7];
+    if      ((bs[0] == bs[1] && bs[1] == bs[2] && bs[1]!='-')) winner = bs[1];
+    else if ((bs[3] == bs[4] && bs[4] == bs[5] && bs[4]!='-')) winner = bs[4];
+    else if ((bs[6] == bs[7] && bs[7] == bs[8] && bs[7]!='-')) winner = bs[7];
 
     //Column-wise conditions
-    else if ((bs[0] == bs[3] == bs[6] !='-')) winner = bs[3];
-    else if ((bs[1] == bs[4] == bs[7] !='-')) winner = bs[4];
-    else if ((bs[2] == bs[5] == bs[8] !='-')) winner = bs[5];
+    else if ((bs[0] == bs[3] && bs[3] == bs[6] && bs[3]!='-')) winner = bs[3];
+    else if ((bs[1] == bs[4] && bs[4] == bs[7] && bs[4]!='-')) winner = bs[4];
+    else if ((bs[2] == bs[5] && bs[5] == bs[8] && bs[5]!='-')) winner = bs[5];    
 
     //Diagonal conditions
-    else if ((bs[0] == bs[4] == bs[8] !='-')) winner = bs[4];
-    else if ((bs[2] == bs[4] == bs[6] !='-')) winner = bs[4];
+    else if ((bs[0] == bs[4] && bs[4] == bs[8] && bs[4]!='-')) winner = bs[4];
+    else if ((bs[2] == bs[4] && bs[4] == bs[6] && bs[4]!='-')) winner = bs[4];    
 
     return winner;
 }
@@ -59,7 +71,6 @@ char find_winner(vector<char> small_board)
 
 int count(vector<char> v, char symbol)
 {
-    //v is compulsorily of size 3
     int val = 0;
     for(int i=0; i<3; i++)
     {
@@ -139,7 +150,6 @@ int potential_count(vector<char> bs, char symbol)
         if(t==2 && r==1) 
             potential++;
     }
-
     return potential;
 }
 
@@ -154,7 +164,6 @@ int simple_difference(vector<char> bs)
         if (bs[i] == 'x') 
             x_count++;
     }
-
     return x_count - o_count;
 }
 
@@ -230,7 +239,7 @@ void hash_wrapper()
 
 
 int utility(vector<vector<char> > state)
-{
+{   
     vector<properties> winner_properties;
     vector<char> winners;    
 
@@ -239,10 +248,6 @@ int utility(vector<vector<char> > state)
         winner_properties.push_back(small_board_hash[state[i]]);
         winners.push_back(winner_properties[i].winner);
     }
-
-    cout<<"  ";
-    print_char_vector(winners);
-    cout<<"  ";
     
     properties p = small_board_hash[winners];
 
