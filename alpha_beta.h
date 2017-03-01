@@ -13,36 +13,36 @@ result alpha_beta (vector<vector<char> >board, int block2)        // Initial alp
     int cell = 0;
     bool check = false;
 
-    if(new_game)
-    {
-        cout << "It's a new game." << endl;
-        for (int i=0; i<limit; i++)
-        {
-            for(int j=0; j<limit; j++)                                  
-            {
-                board[i][j] = 'x';
-                temp = min_value(board, INT_MIN, INT_MAX, j, 1);  // call the min for all positions.
-                board[i][j] = '-';
+    // if(new_game)
+    // {
+    //     cout << "\t\t\t   Doing Hashing of different states..." << endl;
+    //     for (int i=0; i<limit; i++)
+    //     {
+    //         for(int j=0; j<limit; j++)                                  
+    //         {
+    //             board[i][j] = 'x';
+    //             temp = min_value(board, INT_MIN, INT_MAX, j, 1, new_game);  // call the min for all positions.
+    //             board[i][j] = '-';
 
-                if(value <=  temp)
-                {
-                    value = temp;
-                    block = i;
-                    cell = j;
-                }
-            }
-        }
-        new_game = false;
-    }
+    //             if(value <=  temp)
+    //             {
+    //                 value = temp;
+    //                 block = i;
+    //                 cell = j;
+    //             }
+    //         }
+    //     }
+    //     new_game = false;
+    // }
 
-    else
+    // else
     {
         for(int j=0; j<limit; j++)
         {
             if(board[block2-1][j] == '-')
             {
                 board[block2-1][j] = 'x';
-                temp = min_value(board, INT_MIN, INT_MAX, j, 1);  // call the min function.
+                temp = min_value(board, INT_MIN, INT_MAX, j, 1, new_game);  // call the min function.
                 board[block2-1][j] = '-';
                 check = true;
 
@@ -55,12 +55,12 @@ result alpha_beta (vector<vector<char> >board, int block2)        // Initial alp
             }
         }
         if(check)
-            cout << "The bot has to play in block " << block2 << endl;
+            cout << "\t\t\t   The bot has to play in block " << block2 << endl;
 
         if(!check)                                                      // If all the positions are filled then 
                                                                         // the player can move anywhere.
         {
-            cout << "The bot can play anywhere" << endl;
+            cout << "\t\t\t   The bot can play anywhere" << endl;
             for(int i=0; i<limit; i++)
             {
                 for(int j=0; j<limit; j++)
@@ -68,7 +68,7 @@ result alpha_beta (vector<vector<char> >board, int block2)        // Initial alp
                     if(board[i][j] == '-')
                     {
                         board[i][j] = 'x';
-                        temp = min_value(board, INT_MIN, INT_MAX, j, 1);
+                        temp = min_value(board, INT_MIN, INT_MAX, j, 1, new_game);
                         board[i][j] = '-';
 
                         if(value <= temp)                                               // Pruning condition.
@@ -85,14 +85,16 @@ result alpha_beta (vector<vector<char> >board, int block2)        // Initial alp
     return result (block, cell);                     // Return the move that is most fruitful.    
 }
 
-int max_value (vector<vector<char> > board, int alpha, int beta, int block, int depth)
+int max_value (vector<vector<char> > board, int alpha, int beta, int block, int depth, bool new_game)
 {
-    //cout << "I am in max_value " << depth << endl;
     bool check = false;
-    if(depth == max_depth)                                          // Estimate the utility value.
-    {  
+    if(new_game)                                        // Estimate the utility value.
+    {
+        if(depth == max_depth-1)
+            return utility (board);   
+    }                          
+    else if(depth == max_depth)
         return utility (board);
-    }
 
     int value = INT_MIN;
 
@@ -101,8 +103,7 @@ int max_value (vector<vector<char> > board, int alpha, int beta, int block, int 
         if(board[block][j] == '-')
         {
             board[block][j] = 'x';
-            //cout << "Called the min function " << depth << endl;
-            value = max(value, min_value(board, alpha, beta, j, depth+1));  // call the min function.    
+            value = max(value, min_value(board, alpha, beta, j, depth+1, new_game));  // call the min function.    
             board[block][j] = '-';
             check = true;
 
@@ -123,8 +124,7 @@ int max_value (vector<vector<char> > board, int alpha, int beta, int block, int 
                 if(board[i][j] == '-')
                 {
                     board[i][j] = 'x';
-                    //cout << "Called the min function from anywhere" << depth << endl;
-                    value = max(value, min_value(board, alpha, beta, j, depth+1));
+                    value = max(value, min_value(board, alpha, beta, j, depth+1, new_game));
                     board[i][j] = '-';
 
 
@@ -140,12 +140,16 @@ int max_value (vector<vector<char> > board, int alpha, int beta, int block, int 
     return value;
 } 
 
-int min_value (vector<vector<char> > board, int alpha, int beta, int block, int depth)
+int min_value (vector<vector<char> > board, int alpha, int beta, int block, int depth, bool new_game)
 {
     bool check = false;
-    //cout << "I am in min_value " << depth << endl;
-    if(depth == max_depth)                                         // Estimate the utility.
-        return utility (board);          
+    if(new_game)                                        // Estimate the utility value.
+    {
+        if(depth == max_depth-1)
+            return utility (board);      
+    }                        
+    else if(depth == max_depth)
+        return utility (board);        
 
     int value = INT_MAX;
 
@@ -154,8 +158,7 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
         if(board[block][j] == '-')
         {
             board[block][j] = 'o';
-            //cout << "Called the max function " << depth << endl;
-            value = min(value, max_value(board, alpha, beta, j, depth+1));  // Call the max function
+            value = min(value, max_value(board, alpha, beta, j, depth+1, new_game));  // Call the max function
             board[block][j] = '-';
             check = true;
 
@@ -177,8 +180,7 @@ int min_value (vector<vector<char> > board, int alpha, int beta, int block, int 
                 if(board[i][j] == '-')
                 {
                     board[i][j] = 'o';
-                    //cout << "Called the max function from anywhere" << depth << endl;
-                    value = min(value, max_value(board, alpha, beta, j, depth+1));  // Call the max function.
+                    value = min(value, max_value(board, alpha, beta, j, depth+1, new_game));  // Call the max function.
                     board[i][j] = '-';
 
                     if(value <=alpha)                           // Pruning function.
