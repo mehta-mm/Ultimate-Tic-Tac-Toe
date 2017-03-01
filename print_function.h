@@ -28,8 +28,12 @@ void print_board(vector<vector<char> > board)                   // It is not str
         for(int j=0;j<9;j++)
         {
             if(j==3 || j==6)
-                cout<<" ";
-            cout<<mat[i][j];
+                cout<<"    ";
+            else if(j==0)
+                cout << "\t\t\t\t ";
+            else 
+                cout << " ";
+            cout<< mat[i][j] ;
         }
         cout<<endl;
         if(i==2 || i==5)
