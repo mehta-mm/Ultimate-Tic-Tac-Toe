@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <sys/time.h>
 #pragma once	
 
 using namespace std;
@@ -9,26 +10,19 @@ using namespace std;
 #define LARGE_MAX  1000
 #define LARGE_MIN -1000
 
-int max_depth = 4;
+typedef unsigned long long timestamp_t;
+
+int max_depth = 6;
 int util_max = 0;
 int util_min = 0;
 bool chance = true;
 bool new_game = true; 
 
-int min_value(vector<vector<char> >, int, int, int, int);
-int max_value(vector<vector<char> >, int, int, int, int);
+int min_value(vector<vector<char> >, int, int, int, int, bool);
+int max_value(vector<vector<char> >, int, int, int, int, bool);
 void print_board(vector<vector<char> >);
 
-class properties
-{
-public:
-    properties();
-    int utility_value;
-    int potential_o;
-    int potential_x;
-    int simple_difference;
-    char winner;
-};
+vector<char> final_winner (9, '-');
 
 class result
 {
@@ -41,6 +35,18 @@ class result
         cell = b;
     }
 };
+result ans (0, 0);
+
+class properties
+{
+public:
+    properties();
+    int utility_value;
+    int potential_o;
+    int potential_x;
+    int simple_difference;
+    char winner;
+};
 
 properties::properties()
 {
@@ -51,4 +57,9 @@ properties::properties()
     winner = '-';
 }
 
-result ans (0, 0);
+static timestamp_t get_timestamp ()
+{
+  struct timeval now;
+  gettimeofday (&now, NULL);
+  return  now.tv_usec + (timestamp_t)now.tv_sec * 1000000;
+}
