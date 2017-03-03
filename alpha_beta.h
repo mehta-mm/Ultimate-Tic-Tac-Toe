@@ -13,29 +13,29 @@ result alpha_beta (vector<vector<char> >board, int block2)        // Initial alp
     int cell = 0;
     bool check = false;
 
-    // if(new_game)
-    // {
-    //     cout << "\t\t\t   Doing Hashing of different states..." << endl;
-    //     for (int i=0; i<limit; i++)
-    //     {
-    //         for(int j=0; j<limit; j++)                                  
-    //         {
-    //             board[i][j] = 'x';
-    //             temp = min_value(board, INT_MIN, INT_MAX, j, 1, new_game);  // call the min for all positions.
-    //             board[i][j] = '-';
+    if(new_game)
+    {
+        cout << "\t\t\t   Doing Hashing of different states..." << endl;
+        for (int i=0; i<limit; i++)
+        {
+            for(int j=0; j<limit; j++)                                  
+            {
+                board[i][j] = 'x';
+                temp = min_value(board, INT_MIN, INT_MAX, j, 1, new_game);  // call the min for all positions.
+                board[i][j] = '-';
 
-    //             if(value <=  temp)
-    //             {
-    //                 value = temp;
-    //                 block = i;
-    //                 cell = j;
-    //             }
-    //         }
-    //     }
-    //     new_game = false;
-    // }
+                if(value <=  temp)
+                {
+                    value = temp;
+                    block = i;
+                    cell = j;
+                }
+            }
+        }
+        new_game = false;
+    }
 
-    // else
+    else
     {
         for(int j=0; j<limit; j++)
         {
